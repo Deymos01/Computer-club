@@ -3,4 +3,5 @@ project(YADRO_task_computer_club)
 
 set(CMAKE_CXX_STANDARD 20)
 
-add_executable(YADRO_task_computer_club src/main/main.cpp)
+add_executable(YADRO_task_computer_club src/main/main.cpp
+        src/computer_club/computer_club.cpp)
