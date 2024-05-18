@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <iomanip>
+#include <algorithm>
 #include "computer_club.h"
 #include "..\parser\parser.h"
 #include "..\computer_club\actions.h"
