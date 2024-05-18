@@ -1,7 +1,3 @@
-//
-// Created by Deymos on 17/05/2024.
-//
-
 #include <fstream>
 #include <iostream>
 #include <iomanip>
@@ -43,16 +39,61 @@ void ComputerClub::getConfigInfo(std::ifstream &inFile) {
 void ComputerClub::startSimulation(std::ifstream &inFile) {
     std::cout << std::setfill('0') << std::setw(2) << openTime / 60 << ':' << std::setw(2) << openTime % 60 << '\n';
 
-    Actions actions;
     std::string line;
     while (inFile.peek() != EOF) {
         std::getline(inFile, line);
         std::cout << line << '\n';
-        actions.processAction(this, line);
+        Actions::processAction(this, line);
     }
 
+    kickOutAllClients();
     std::cout << std::setfill('0') << std::setw(2) << closeTime / 60 << ':' << std::setw(2) << closeTime % 60 << '\n';
     printTablesInfo();
+}
+
+bool ComputerClub::isClientInClub(const std::string &clientName) const {
+    return clients.find(clientName) != clients.end();
+}
+
+bool ComputerClub::isThereFreeTable() const {
+    for (const auto &table : tables) {
+        if (!table.isBusy) {
+            return true;
+        }
+    }
+    return false;
+}
+
+bool ComputerClub::isClientPlaying(const std::string &clientName) {
+    return clients[clientName] != -1;
+}
+
+void ComputerClub::setClientTable(const std::string &clientName, int tableNumber) {
+    clients[clientName] = tableNumber;
+}
+
+void ComputerClub::addClientToQueue(const std::string &clientName) {
+    clientsQueue.push(clientName);
+}
+
+void ComputerClub::removeClient(const std::string &clientName) {
+    clients.erase(clientName);
+}
+
+void ComputerClub::kickOutAllClients() {
+    std::string time = {
+            (char)(closeTime / 60 / 10 + '0'),
+            (char)(closeTime / 60 % 10 + '0'),
+            ':',
+            (char)(closeTime % 60 / 10 + '0'),
+            (char)(closeTime % 60 % 10 + '0'),
+    };
+    std::string action = time + " 11 ";
+
+    while (!clients.empty()) {
+        auto& client = *clients.begin();
+        Actions::processAction(this, action + client.first);
+    }
 }
 
 void ComputerClub::printTablesInfo() const {
@@ -61,4 +102,9 @@ void ComputerClub::printTablesInfo() const {
                   std::setfill('0') << std::setw(2) << tables[i].busyTime / 60 << ':' <<
                   std::setw(2) << tables[i].busyTime % 60 << '\n';
     }
+}
+
+void ComputerClub::printClientAction(int time, int ID, const std::string& body) const {
+    std::cout << std::setfill('0') << std::setw(2) <<
+              time / 60 << ':' << std::setw(2) << time % 60 << ' ' << ID << ' ' << body << '\n';
 }
