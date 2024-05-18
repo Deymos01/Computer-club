@@ -1,20 +1,15 @@
 #ifndef PARSER_H
 #define PARSER_H
 
-#include <algorithm>
-
 class Parser {
-private:
-
 public:
     Parser() = default;
-
     ~Parser() = default;
 
     static bool isIntPosNumber(const std::string &str) {
         if (str.empty()) { return false; }
-        if (std::ranges::any_of(str.begin(), str.end(), [](char ch) -> bool { return !isdigit(ch); })) {
-            return false;
+        for (char ch : str) {
+            if (!isdigit(ch)) { return false; }
         }
         return true;
     }
@@ -31,8 +26,8 @@ public:
 
     static bool isCorrectName(const std::string &str) {
         if (str.empty()) { return false; }
-        if (std::ranges::any_of(str.begin(), str.end(), [](char ch) -> bool { return !isalpha(ch) && !isdigit(ch) && ch != '_'; })) {
-            return false;
+        for (char ch : str) {
+            if (!isalpha(ch) && !isdigit(ch) && ch != '_') { return false; }
         }
         return true;
     }
